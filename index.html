@@ -51,7 +51,7 @@
             <h2> API course</h2>
             <ul class="social">
                 <li><a href="https://www.youtube.com/@juliannd3989/featured" target="_blank"<i class="fa fa-youtube-play" style="color:red"></i></a></li> 
-                <li><a href="https://github.com/julionieto48" target="_blank"<i class="fa fa-github"   style="color:#fff""></i></a></li>
+                <li><a href="https://github.com/julionieto48/NamesApi_course.githu.io" target="_blank"<i class="fa fa-github"   style="color:#fff""></i></a></li>
                          
             </ul>
     
@@ -185,9 +185,7 @@
        
         let displayName = async() => {
             xlabel.length = 0 ; ylabel.length = 0
-            
-            //document.getElementById("nombre_ingresado").innerHTML = nombre  // variable que esta tomando nombre ingresado = a
-           
+        
         };
                 
         
@@ -204,7 +202,7 @@
             
 
             let jasonPromise = await respuesta.json(); 
-            //console.log(jasonPromise)
+            
 
             // organizar informacion 
             longitud = jasonPromise.country.length
@@ -218,53 +216,11 @@
                 xlabel.push(country_id)
                 ylabel.push(probability)
 
-                //console.log(country_id,probability);
+                
             });
                       
         } 
-        
-        // visualizacion mapa
-
-        /*
-        let getCountryData = async () => {
-            let country_apiRoute = "https://restcountries.com/v3.1/alpha/"
-            latitude_longitude = []
-
-                     
-            //obtener latitud y longitud
-            /*
-            for(i = 0; i <= xlabel.length - 1; i++){
-
-                let country_completeApiRoute = country_apiRoute + xlabel[i]
-                
-                let respuesta = await fetch(country_completeApiRoute)
-                let jasonPromise = await respuesta.json() 
-
-                latitude_longitude.push(jasonPromise[0].latlng)
-                lat = latitude_longitude[i][0] ; lon = latitude_longitude[i][1]
-                
-                // crear circulo o borrar
-                if(are_circles == false){ // no hay circulos previos
-                    console.log('No Hay circulos');
-                    circle = L.circle([lat, lon], {
-                        color: color_list[i],
-                        fillColor: color_list[i],
-                        fillOpacity: 0.5,
-                        radius: 999890
-                    }).addTo(map); 
-                    console.log('Ya hay circulos');
-                    are_circles = true 
-                }
-                
-                else if(are_circles == true){
-                    console.log('Ya hay circulos');
-                    //circle = null
-                    circle = L.circle([lat,lon]).remove()
-                    are_circles = true 
-                    console.log('Ya no hay circulos');
-                }       
-            }*/
-                              
+                                     
         
         let getCountryData = async () => {
             let country_apiRoute = "https://restcountries.com/v3.1/alpha/"
@@ -312,35 +268,18 @@
                 //layerGroup.addTo(map)
                 are_circles = true  
             }
-            
-            //await bringCountry()        
-            /*
-            if(grupo_circulo_paises != grupo_circulo_paises_p){
-                if(map.hasLayer(grupo_circulo_paises)){ //nombre === previous_name
-                    map.removeLayer(grupo_circulo_paises)
-                    map.addLayer(grupo_circulo_paises_p)
-                }else{
-                    map.addLayer(grupo_circulo_paises)
-                    //previous_name = nombre    
-                }
-                
-            } else if(grupo_circulo_paises == grupo_circulo_paises_p){
-                console.log('aqui');
-                grupo_circulo_paises.remove() // objetivo convertir todas la propiedades en undefined
-                
-            }
-            grupo_circulo_paises_p = grupo_circulo_paises
-            console.log(grupo_circulo_paises); */         
+           
+         
         }
 
         const map = L.map('map', { zoomSnap: 0.2 }).setView([0, 0], 2.8);
         L.control.scale().addTo(map);
 
-        L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 10,
             minZoom:1.8,
             bounds: [[85, -180], [-85, 180]],
-            attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 
         }).addTo(map);
 
