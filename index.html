@@ -228,7 +228,7 @@
             latitude_longitude = []
 
             if(are_circles != false){ //  si  hay circulos
-                console.log('Hay circulos',layerGroup);
+                
                 //layerGroup.removeFrom(map)
                 for(i = 0; i <= xlabel.length - 1; i++){
                     let country_completeApiRoute = country_apiRoute + xlabel[i]
@@ -243,10 +243,10 @@
                     circle = L.circle([lat, lon]).remove(); 
                 }
                 are_circles = false // ya no hay circulos
-                console.log('Ya no hay circulos',layerGroup);
+                
             }else{
                 //obtener latitud y longitud
-                console.log('No hay circulos',layerGroup);
+                
                 for(i = 0; i <= xlabel.length - 1; i++){
                     let country_completeApiRoute = country_apiRoute + xlabel[i]
                 
@@ -264,7 +264,7 @@
                         radius: 999890
                     }).addTo(map); 
                 }
-                console.log('Ya  Hay circulos');
+                
                 //layerGroup.addTo(map)
                 are_circles = true  
             }
@@ -275,11 +275,11 @@
         const map = L.map('map', { zoomSnap: 0.2 }).setView([0, 0], 2.8);
         L.control.scale().addTo(map);
 
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             maxZoom: 10,
             minZoom:1.8,
             bounds: [[85, -180], [-85, 180]],
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
 
         }).addTo(map);
 
