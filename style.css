@@ -1,0 +1,142 @@
+:root{
+    --color_uno: #00001E;
+    --color_dos: #607FFD; 
+    --color_tres:#1443FC;
+    --color_cuatro:#555E85;
+    --color_blanco: #F8F5FC;
+}
+body{
+    background-color: var(--color_cuatro);
+    color: var(--color_blanco);
+
+    display: flex;
+    flex-direction: column;
+
+    min-height: 800px ;
+
+
+    
+}
+
+.ingreso_datos{
+    margin: 2%;
+    width: 7%;
+    display: flexbox;
+       
+}
+
+fieldset.contenido_datos label {
+    width: 15px;   
+}
+
+
+#nombre{
+    padding: 0.5%;
+    margin: 2% 15px ;
+    width: 200px;
+    text-align: center;
+    border-radius: 10px;
+    border: var(--color_blanco);
+    
+}
+
+#botton-mostrar{
+    width: 500px ;
+    height: 40px;
+    border-radius: 10px;
+    margin: auto;
+    text-align: center;
+    border: var(--color_blanco);
+    box-sizing: border-box;
+
+}
+
+.despliegue_datos{
+    display: flex;
+    padding : 5px;
+    flex-direction: row;
+}
+
+#geolocalizacion {
+    height: 500px; 
+    width: 50%;
+    margin: 1% 40px; 
+    box-sizing: border-box;   
+}
+
+#map{
+   
+    height: 100%; 
+    width: 100%;
+}
+
+#el_plot{
+    height: 500px;
+    width : 50%;
+    margin-top: auto;
+
+}
+
+
+.footer{
+    text-align: center; 
+    width: 100%;
+    color: var(--color_blanco);
+    font-family: "Open Sans";
+    background: var(--color_uno);
+
+    margin-top: auto;
+
+}
+
+.contenido_footer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.contenido_footer h2{
+    font-size: 35px;
+    font-weight: 300;
+    text-transform: capitalize;
+}
+
+.contenido_footer h1{
+    max-width: 300px;
+    margin: 10px auto;
+    line-height: 28px;
+    font-size: 14px;
+}
+
+.social{
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    font-size: 80px;
+    font-family: "Font Awesome 5 Free"; /* This is the correct font-family*/
+    font-style: normal;
+    font-weight: normal;
+    
+    
+}
+
+.social li{
+    margin: 0 10px;
+}
+
+.social a i{
+    
+
+    font-weight: 900;
+    cursor: pointer; 
+}
+
+.bottom_footer {
+    background: #000;
+    width: 100%;
+
+}

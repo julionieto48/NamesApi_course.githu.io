@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Name API Graph</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+    integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+    crossorigin=""/>
+
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+     integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+     crossorigin=""></script>
+
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    
+    <div class="ingreso_datos">
+        <fieldset class="contenido_datos">
+            <legend>Datos </legend>
+
+            <label for="nombre">Nombre</label>
+            <input type="text" placeholder= "Ingresar nombre..." id="nombre">
+           <br />
+
+           <input type="button" id="botton-mostrar"  value="Mostrar Datos">
+            
+        </fieldset>
+
+    </div>
+
+    <div class="despliegue_datos">
+        
+        <div id="geolocalizacion">
+            <div id="map"></div>
+        </div>
+        
+        <div id="el_plot">
+            <canvas id="grafico"></canvas>
+        </div>   
+   </div>
+
+   <footer class="footer"> 
+        <div class="contenido_footer">
+            <h2> API course</h2>
+            <ul class="social">
+                <li><a href="https://www.youtube.com/@juliannd3989/featured" target="_blank"<i class="fa fa-youtube-play" style="color:red"></i></a></li> 
+                <li><a href="https://github.com/julionieto48" target="_blank"<i class="fa fa-github"   style="color:#fff""></i></a></li>
+                         
+            </ul>
+    
+            <div class="bottom_footer">
+                <h1> copyright &copy;2023 designed by <span>Julian Nieto </span> </h1>
+             </div>
+
+        </div>
+      
+
+   </footer>
+    <script>
+        // Graficar
+        const xlabel = []
+        const ylabel = []
+        let myChart;
+
+        //let grupo_circulo_paises = L.featureGroup(); //current
+        //let grupo_circulo_paises_p = L.featureGroup(); //previous
+
+        let are_circles = false
+        
+
+        let previous_name = '' // interactua con current  nombre
+        
+
+        color_list = ['#6B7599','#A6816C','#B072AF','#72B095','#9A9E7B']
+
+        async function chartCreation(){
+
+            
+
+            const ctx = document.getElementById('grafico');
+            if(myChart){
+                myChart.destroy()
+            }
+
+            function darkenColor(color_list) {
+                const magnitude = -250
+                let color_list_dark = []
+                for(i = 0; i <= color_list.length - 1; i++){
+                    
+                    hexColor = color_list[i].replace(`#`, ``)
+                    if(hexColor.length===6){
+                    const decimalColor = parseInt(hexColor, 16)
+                    
+                    let r = (decimalColor >> 16) + magnitude;
+                    r > 255 && (r = 255);
+                    r < 0 && (r = 0);
+
+                    let g = (decimalColor & 0x0000ff) + magnitude;
+                    g > 255 && (g = 255);
+                    g < 0 && (g = 0);
+                    
+                    let b = ((decimalColor >> 8) & 0x00ff) + magnitude;
+                    b > 255 && (b = 255);
+                    b < 0 && (b = 0);
+
+                    color_list_dark.push(`#${(g | (b << 8) | (r << 16)).toString(16)}`)
+                    }     
+                }
+
+                return color_list_dark
+
+            }
+            
+
+
+           
+            myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: xlabel,
+                datasets: [{
+                label: `  Predicción de probabilidad de la nacionalidad de ${nombre}`,
+                data: ylabel,
+                backgroundColor: color_list,
+                borderColor: darkenColor(color_list), 
+                borderWidth: 2
+                }]
+            },
+            
+            options: {
+                responsive: true ,
+                plugins:{
+                    title:{ display: true , text: `  Predicción de probabilidad de la nacionalidad de ${nombre}`, color: "#31344D", font:{size: 20}},
+                    legend: {display: false}
+                },
+                scales: {
+                    y: {
+                        display:true,
+                        text:'Probability',
+                        color: '#0B268F',
+                        beginAtZero: true,
+                        ticks: {
+                            color: "#31344D"
+                        },                        
+                        grid:{
+                            display: true,
+                            color: '#F8F5FC'
+                        }
+                    },
+                    x:{
+                        display:true,
+                        text:'Country',
+                        color: '#0B268F',
+                        ticks: {
+                            color: "#31344D"
+                        },
+                        
+                        grid:{
+                            display: false,
+                            
+                        }
+                    }
+                }
+                              
+            }
+            });
+
+        }
+       
+               
+        // Informacion
+        let nombre = ''
+        document.getElementById("nombre").addEventListener('keyup', function changeInputName(){
+            nombre =  document.getElementById("nombre").value
+        })
+        
+
+       
+        let displayName = async() => {
+            xlabel.length = 0 ; ylabel.length = 0
+            
+            //document.getElementById("nombre_ingresado").innerHTML = nombre  // variable que esta tomando nombre ingresado = a
+           
+        };
+                
+        
+        let bringCountry_1 =  () => {
+            let name_apiRoute = "https://api.nationalize.io/?name="
+            let completeApiRoute = name_apiRoute + nombre
+          
+            return fetch(completeApiRoute) 
+
+                      
+        } 
+
+        let bringCountry_2 = async (respuesta) => {
+            
+
+            let jasonPromise = await respuesta.json(); 
+            //console.log(jasonPromise)
+
+            // organizar informacion 
+            longitud = jasonPromise.country.length
+            
+            results = jasonPromise.country.slice(0,longitud);
+
+            results.forEach(element => {
+                country_id = element.country_id;
+                probability = element.probability;
+
+                xlabel.push(country_id)
+                ylabel.push(probability)
+
+                //console.log(country_id,probability);
+            });
+                      
+        } 
+        
+        // visualizacion mapa
+
+        /*
+        let getCountryData = async () => {
+            let country_apiRoute = "https://restcountries.com/v3.1/alpha/"
+            latitude_longitude = []
+
+                     
+            //obtener latitud y longitud
+            /*
+            for(i = 0; i <= xlabel.length - 1; i++){
+
+                let country_completeApiRoute = country_apiRoute + xlabel[i]
+                
+                let respuesta = await fetch(country_completeApiRoute)
+                let jasonPromise = await respuesta.json() 
+
+                latitude_longitude.push(jasonPromise[0].latlng)
+                lat = latitude_longitude[i][0] ; lon = latitude_longitude[i][1]
+                
+                // crear circulo o borrar
+                if(are_circles == false){ // no hay circulos previos
+                    console.log('No Hay circulos');
+                    circle = L.circle([lat, lon], {
+                        color: color_list[i],
+                        fillColor: color_list[i],
+                        fillOpacity: 0.5,
+                        radius: 999890
+                    }).addTo(map); 
+                    console.log('Ya hay circulos');
+                    are_circles = true 
+                }
+                
+                else if(are_circles == true){
+                    console.log('Ya hay circulos');
+                    //circle = null
+                    circle = L.circle([lat,lon]).remove()
+                    are_circles = true 
+                    console.log('Ya no hay circulos');
+                }       
+            }*/
+                              
+        
+        let getCountryData = async () => {
+            let country_apiRoute = "https://restcountries.com/v3.1/alpha/"
+            var layerGroup = L.layerGroup();
+            latitude_longitude = []
+
+            if(are_circles != false){ //  si  hay circulos
+                console.log('Hay circulos',layerGroup);
+                //layerGroup.removeFrom(map)
+                for(i = 0; i <= xlabel.length - 1; i++){
+                    let country_completeApiRoute = country_apiRoute + xlabel[i]
+                
+                    let respuesta = await fetch(country_completeApiRoute)
+                    let jasonPromise = await respuesta.json() 
+
+                    latitude_longitude.push(jasonPromise[0].latlng)
+                    lat = latitude_longitude[i][0] ; lon = latitude_longitude[i][1]
+                
+                    // crear circulo 
+                    circle = L.circle([lat, lon]).remove(); 
+                }
+                are_circles = false // ya no hay circulos
+                console.log('Ya no hay circulos',layerGroup);
+            }else{
+                //obtener latitud y longitud
+                console.log('No hay circulos',layerGroup);
+                for(i = 0; i <= xlabel.length - 1; i++){
+                    let country_completeApiRoute = country_apiRoute + xlabel[i]
+                
+                    let respuesta = await fetch(country_completeApiRoute)
+                    let jasonPromise = await respuesta.json() 
+
+                    latitude_longitude.push(jasonPromise[0].latlng)
+                    lat = latitude_longitude[i][0] ; lon = latitude_longitude[i][1]
+                
+                    // crear circulo 
+                    circle = L.circle([lat, lon], {
+                        color: color_list[i],
+                        fillColor: color_list[i],
+                        fillOpacity: 0.5,
+                        radius: 999890
+                    }).addTo(map); 
+                }
+                console.log('Ya  Hay circulos');
+                //layerGroup.addTo(map)
+                are_circles = true  
+            }
+            
+            //await bringCountry()        
+            /*
+            if(grupo_circulo_paises != grupo_circulo_paises_p){
+                if(map.hasLayer(grupo_circulo_paises)){ //nombre === previous_name
+                    map.removeLayer(grupo_circulo_paises)
+                    map.addLayer(grupo_circulo_paises_p)
+                }else{
+                    map.addLayer(grupo_circulo_paises)
+                    //previous_name = nombre    
+                }
+                
+            } else if(grupo_circulo_paises == grupo_circulo_paises_p){
+                console.log('aqui');
+                grupo_circulo_paises.remove() // objetivo convertir todas la propiedades en undefined
+                
+            }
+            grupo_circulo_paises_p = grupo_circulo_paises
+            console.log(grupo_circulo_paises); */         
+        }
+
+        const map = L.map('map', { zoomSnap: 0.2 }).setView([0, 0], 2.8);
+        L.control.scale().addTo(map);
+
+        L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+            maxZoom: 10,
+            minZoom:1.8,
+            bounds: [[85, -180], [-85, 180]],
+            attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+
+        }).addTo(map);
+
+   
+               
+      
+        //let accionBotonAdd = document.getElementById("botton-add").addEventListener('click', function() {displayName().then(bringCountry)} )
+        let accionBotonAdd = document.getElementById("botton-mostrar").addEventListener('click', function() {displayName().then(bringCountry_1).then(bringCountry_2).then(chartCreation).then(getCountryData)} )
+
+        
+
+
+    </script>
+
+</body>
+</html>
