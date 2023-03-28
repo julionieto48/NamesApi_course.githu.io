@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client API</title>
+</head>
+
+<body>
+    
+    <div class="ingreso_datos">
+         <fieldset>
+            <legend> Datos </legend>
+
+            <label for="nombre">Nombre</label>
+            <input type="text" placeholder= "Ingresar nombre..." id="nombre">
+           <br />
+
+           <input type="button" id="botton-add" name="añadir" value="Mostrar Datos">
+            
+        </fieldset>
+
+    </div>
+
+    <div class="despliegue_datos">
+        <p id="nombre_ingresado"></p>      
+   </div>
+
+    <script>
+
+        var nombre = document.getElementById("nombre").value
+        let displayName = async(n) => document.getElementById("nombre_ingresado").innerHTML = n ;
+        
+        
+        
+        let bringCountry = async () => {
+            let apiRoute = "https://api.nationalize.io/?name="
+            let completeApiRoute = apiRoute + nombre
+           
+            const respuesta = await fetch(completeApiRoute) 
+
+            const jasonPromise = await respuesta.json(); // promesa
+
+            // organizar informacion 
+            longitud = jasonPromise.country.length
+            results = jasonPromise.country.slice(0,longitud);
+
+            console.log("jasonPromise", jasonPromise)
+            console.log("results", results);             
+
+            results.forEach(element => {
+                country_id = element.country_id;
+                probability = element.probability;
+
+            });
+            console.log(country_id,probability);
+                      
+        }     
+
+        let accionBotonAdd = document.getElementById("botton-add").addEventListener('click', function() {displayName(nombre).then(bringCountry)} )
+        
+    </script>
+</body>
+</html>
